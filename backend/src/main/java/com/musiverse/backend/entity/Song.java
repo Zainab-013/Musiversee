@@ -1,0 +1,135 @@
+package com.musiverse.backend.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "songs")
+public class Song {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "song_name")
+    private String songName;
+
+    private String movie;
+    private String actor;
+    private String actress;
+    private String artist;
+    private String composer;
+    private String lyricist;
+    private String category;
+
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
+
+    @Column(name = "song_url", columnDefinition = "TEXT")
+    private String songUrl;
+
+    // ✅ No-args constructor (REQUIRED by JPA)
+    public Song() {
+    }
+
+    // ✅ All-args constructor (optional but useful)
+    public Song(String songName, String movie, String actor, String actress,
+                String artist, String composer, String lyricist,
+                String category, String imageUrl, String songUrl) {
+        this.songName = songName;
+        this.movie = movie;
+        this.actor = actor;
+        this.actress = actress;
+        this.artist = artist;
+        this.composer = composer;
+        this.lyricist = lyricist;
+        this.category = category;
+        this.imageUrl = imageUrl;
+        this.songUrl = songUrl;
+    }
+
+    // ✅ Getters & Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getSongName() {
+        return songName;
+    }
+
+    public void setSongName(String songName) {
+        this.songName = songName;
+    }
+
+    public String getMovie() {
+        return movie;
+    }
+
+    public void setMovie(String movie) {
+        this.movie = movie;
+    }
+
+    public String getActor() {
+        return actor;
+    }
+
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    public String getActress() {
+        return actress;
+    }
+
+    public void setActress(String actress) {
+        this.actress = actress;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getComposer() {
+        return composer;
+    }
+
+    public void setComposer(String composer) {
+        this.composer = composer;
+    }
+
+    public String getLyricist() {
+        return lyricist;
+    }
+
+    public void setLyricist(String lyricist) {
+        this.lyricist = lyricist;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getSongUrl() {
+        return songUrl;
+    }
+
+    public void setSongUrl(String songUrl) {
+        this.songUrl = songUrl;
+    }
+}
