@@ -1,6 +1,10 @@
 package com.musiverse.backend.entity;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -17,16 +21,29 @@ public class User {
 
     private String password;
 
-    // REQUIRED: no-args constructor
-    public User() {}
+    // =========================
+    // LIKED SONGS (Many-to-Many)
+    // =========================
+    @ManyToMany
+    @JoinTable(
+        name = "user_liked_songs",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "song_id")
+    )
+    @JsonIgnore // ✅ prevents infinite recursion
+    private Set<Song> likedSongs = new HashSet<>();
 
-    // getters & setters
-    public Long getId() {
-        return id;
+    // =========================
+    // CONSTRUCTORS
+    // =========================
+    public User() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // =========================
+    // GETTERS & SETTERS
+    // =========================
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -49,7 +66,27 @@ public class User {
         return password;
     }
 
+    // ❗ REQUIRED for register/login
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Song> getLikedSongs() {
+        return likedSongs;
+    }
+
+    public void setLikedSongs(Set<Song> likedSongs) {
+        this.likedSongs = likedSongs;
+    }
+
+    // =========================
+    // HELPER METHODS (IMPORTANT)
+    // =========================
+    public void likeSong(Song song) {
+        likedSongs.add(song);
+    }
+
+    public void unlikeSong(Song song) {
+        likedSongs.remove(song);
     }
 }

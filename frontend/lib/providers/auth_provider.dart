@@ -6,8 +6,12 @@ class AuthProvider extends ChangeNotifier {
   User? _user;
   bool _isLoading = false;
 
+  // =====================
+  // GETTERS
+  // =====================
   User? get user => _user;
   bool get isLoading => _isLoading;
+  bool get isLoggedIn => _user != null;
 
   // =====================
   // REGISTER
@@ -49,6 +53,9 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // =====================
+  // LOGOUT
+  // =====================
   void logout() {
     _user = null;
     notifyListeners();

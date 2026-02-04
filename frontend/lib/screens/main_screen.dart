@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../config/app_colors.dart';
-import '../providers/auth_provider.dart';
 import '../widgets/mini_player.dart';
 import 'home_screen.dart';
 import 'search_screen.dart';
@@ -22,21 +20,21 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final isAdmin = authProvider.isAdmin;
-
-    final screens = [
-      const HomeScreen(),
-      const SearchScreen(),
-      const LibraryScreen(),
-      if (isAdmin) const UploadScreen(),
-      const ProfileScreen(),
+    final screens = const [
+      HomeScreen(),
+      SearchScreen(),
+      LibraryScreen(),
+      UploadScreen(), // ✅ Available to ALL users
+      ProfileScreen(),
     ];
 
     return Scaffold(
       body: Stack(
         children: [
-          IndexedStack(index: _currentIndex, children: screens),
+          IndexedStack(
+            index: _currentIndex,
+            children: screens,
+          ),
           const Positioned(
             left: 0,
             right: 0,
@@ -62,13 +60,27 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: AppColors.nearBlack,
           selectedItemColor: AppColors.cyan,
           unselectedItemColor: AppColors.lightGrey,
-          items: [
-            const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            const BottomNavigationBarItem(icon: Icon(Icons.library_music), label: 'Library'),
-            if (isAdmin)
-              const BottomNavigationBarItem(icon: Icon(Icons.upload), label: 'Upload'),
-            const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.library_music),
+              label: 'Library',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.upload),
+              label: 'Upload',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
           ],
         ),
       ),

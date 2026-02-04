@@ -1,5 +1,3 @@
-import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../config/app_colors.dart';
@@ -28,19 +26,26 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOutBack,
+      ),
     );
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeIn,
+      ),
     );
 
     _controller.forward();
 
     Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     });
   }
@@ -69,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Logo placeholder - You can replace with your actual logo
+                      /// 🔷 LOGO
                       Container(
                         width: 150,
                         height: 150,
@@ -84,33 +89,49 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.music_note,
-                          size: 80,
-                          color: AppColors.white,
+                        child: ClipOval(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Image.asset(
+                              'assets/images/musiverse_logo.jpeg',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
                         ),
                       ),
+
                       const SizedBox(height: 40),
+
+                      /// 🔷 APP NAME
                       Text(
                         'MUSIVERSE',
-                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                              fontSize: 48,
-                              letterSpacing: 4,
-                              shadows: [
-                                Shadow(
-                                  color: AppColors.cyan.withOpacity(0.8),
-                                  blurRadius: 20,
-                                ),
-                              ],
+                        style: Theme.of(context)
+                            .textTheme
+                            .displayLarge
+                            ?.copyWith(
+                          fontSize: 48,
+                          letterSpacing: 4,
+                          shadows: [
+                            Shadow(
+                              color: AppColors.cyan.withOpacity(0.8),
+                              blurRadius: 20,
                             ),
+                          ],
+                        ),
                       ),
+
                       const SizedBox(height: 16),
+
+                      /// 🔷 TAGLINE
                       Text(
                         'Feel the music',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: AppColors.cyan,
-                              letterSpacing: 2,
-                            ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(
+                          color: AppColors.cyan,
+                          letterSpacing: 2,
+                        ),
                       ),
                     ],
                   ),

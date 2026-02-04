@@ -16,12 +16,9 @@ class MusicProvider with ChangeNotifier {
 
   bool _isLoading = false;
   bool _isPlaying = false;
-  bool _isShuffleEnabled = false;
 
   Duration _currentPosition = Duration.zero;
   Duration _totalDuration = Duration.zero;
-
-  LoopMode _loopMode = LoopMode.off;
 
   // ================= GETTERS =================
   List<Song> get allSongs => _allSongs;
@@ -29,35 +26,32 @@ class MusicProvider with ChangeNotifier {
   List<Song> get recentlyPlayed => _recentlyPlayed;
 
   Song? get currentSong => _currentSong;
-
-  bool get isLoading => _isLoading;
   bool get isPlaying => _isPlaying;
-  bool get isShuffleEnabled => _isShuffleEnabled;
+  bool get isLoading => _isLoading;
 
   Duration get currentPosition => _currentPosition;
   Duration get totalDuration => _totalDuration;
 
-  LoopMode get loopMode => _loopMode;
-
   // ================= INIT =================
   MusicProvider() {
-    _initPlayerListeners();
-  }
+    // 🔁 AUTO PLAY NEXT WHEN SONG ENDS
+    _audioService.initAutoPlayNext(() {
+      _syncCurrentSong();
+    });
 
-  void _initPlayerListeners() {
     _audioService.playerStateStream.listen((state) {
       _isPlaying = state.playing;
       notifyListeners();
     });
 
-    _audioService.positionStream.listen((position) {
-      _currentPosition = position;
+    _audioService.positionStream.listen((pos) {
+      _currentPosition = pos;
       notifyListeners();
     });
 
-    _audioService.durationStream.listen((duration) {
-      if (duration != null) {
-        _totalDuration = duration;
+    _audioService.durationStream.listen((dur) {
+      if (dur != null) {
+        _totalDuration = dur;
         notifyListeners();
       }
     });
@@ -70,141 +64,85 @@ class MusicProvider with ChangeNotifier {
 
     try {
       _allSongs = await ApiService.getAllSongs();
-    } catch (e) {
-      debugPrint('Error fetching all songs: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<List<Song>> fetchSongsByCategory(String category) async {
-    try {
-      return await ApiService.getSongsByCategory(category);
-    } catch (e) {
-      debugPrint('Error fetching category songs: $e');
-      return [];
-    }
+  Future<List<Song>> fetchSongsByCategory(String category) {
+    return ApiService.getSongsByCategory(category);
   }
 
-  Future<List<Song>> searchSongs(String query) async {
-    try {
-      return await ApiService.searchSongs(query);
-    } catch (e) {
-      debugPrint('Error searching songs: $e');
-      return [];
-    }
+  Future<List<Song>> searchSongs(String query) {
+    return ApiService.searchSongs(query);
   }
 
-  Future<void> fetchLikedSongs(String userId) async {
-    try {
-      _likedSongs = await ApiService.getLikedSongs(userId);
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error fetching liked songs: $e');
-    }
-  }
-
-  // ================= PLAYER =================
-  Future<void> playSong(Song song, {List<Song>? playlist}) async {
-    try {
-      _currentSong = song;
-
-      await _audioService.playSong(
-        song,
-        playlist: playlist ?? _allSongs,
-      );
-
-      _recentlyPlayed.removeWhere((s) => s.id == song.id);
-      _recentlyPlayed.insert(0, song);
-
-      if (_recentlyPlayed.length > 20) {
-        _recentlyPlayed = _recentlyPlayed.sublist(0, 20);
-      }
-
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error playing song: $e');
-    }
-  }
-
-  Future<void> pauseSong() async => _audioService.pause();
-  Future<void> resumeSong() async => _audioService.resume();
-
-  Future<void> playNext() async {
-    await _audioService.playNext();
-    _currentSong = _audioService.currentSong;
+  Future<void> fetchLikedSongs(int userId) async {
+    _likedSongs = await ApiService.getLikedSongs(userId);
     notifyListeners();
   }
 
-  Future<void> playPrevious() async {
-    await _audioService.playPrevious();
-    _currentSong = _audioService.currentSong;
-    notifyListeners();
-  }
-
-  Future<void> seekTo(Duration position) async {
-    await _audioService.seek(position);
-  }
-
-  Future<void> toggleShuffle() async {
-    _isShuffleEnabled = !_isShuffleEnabled;
-    await _audioService.setShuffleMode(_isShuffleEnabled);
-    notifyListeners();
-  }
-
-  Future<void> toggleLoopMode() async {
-    switch (_loopMode) {
-      case LoopMode.off:
-        _loopMode = LoopMode.one;
-        break;
-      case LoopMode.one:
-        _loopMode = LoopMode.all;
-        break;
-      case LoopMode.all:
-        _loopMode = LoopMode.off;
-        break;
-    }
-    await _audioService.setLoopMode(_loopMode);
-    notifyListeners();
-  }
-
-  // ================= LIKE / UNLIKE =================
-  Future<void> likeSong(String userId, Song song) async {
-    try {
-      await ApiService.likeSong(userId, song.id);
-      song.isLiked = true;
-
-      if (!_likedSongs.any((s) => s.id == song.id)) {
-        _likedSongs.add(song);
-      }
-
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error liking song: $e');
-    }
-  }
-
-  Future<void> unlikeSong(String userId, Song song) async {
-    try {
-      await ApiService.unlikeSong(userId, song.id);
-      song.isLiked = false;
-
-      _likedSongs.removeWhere((s) => s.id == song.id);
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error unliking song: $e');
-    }
-  }
-
+  // ================= LIKE HELPERS =================
   bool isSongLiked(int songId) {
     return _likedSongs.any((song) => song.id == songId);
   }
 
-  // ================= CLEANUP =================
-  @override
-  void dispose() {
-    _audioService.dispose();
-    super.dispose();
+  // ================= PLAYER =================
+  Future<void> playSong(Song song, {List<Song>? playlist}) async {
+    await _audioService.playSong(
+      song,
+      playlist: playlist ?? _allSongs,
+    );
+
+    _syncCurrentSong();
+  }
+
+  Future<void> pauseSong() => _audioService.pause();
+  Future<void> resumeSong() => _audioService.resume();
+
+  Future<void> playNext() async {
+    await _audioService.playNext();
+    _syncCurrentSong();
+  }
+
+  Future<void> playPrevious() async {
+    await _audioService.playPrevious();
+    _syncCurrentSong();
+  }
+
+  Future<void> seekTo(Duration pos) => _audioService.seek(pos);
+
+  // ================= LIKE =================
+  Future<void> likeSong(int userId, Song song) async {
+    if (isSongLiked(song.id)) return;
+
+    await ApiService.likeSong(userId, song.id);
+    song.isLiked = true;
+    _likedSongs.add(song);
+    notifyListeners();
+  }
+
+  Future<void> unlikeSong(int userId, Song song) async {
+    await ApiService.unlikeSong(userId, song.id);
+    song.isLiked = false;
+    _likedSongs.removeWhere((s) => s.id == song.id);
+    notifyListeners();
+  }
+
+  // ================= HELPERS =================
+  void _syncCurrentSong() {
+    _currentSong = _audioService.currentSong;
+
+    if (_currentSong != null) {
+      _recentlyPlayed.removeWhere((s) => s.id == _currentSong!.id);
+      _recentlyPlayed.insert(0, _currentSong!);
+
+      if (_recentlyPlayed.length > 20) {
+        _recentlyPlayed = _recentlyPlayed.sublist(0, 20);
+      }
+    }
+
+    notifyListeners();
   }
 }

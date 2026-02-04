@@ -72,48 +72,49 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 60),
 
                   /// LOGO
-                  Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: AppColors.neonGradient,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.cyan.withOpacity(0.5),
-                                blurRadius: 20,
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.music_note,
-                            size: 50,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          'MUSIVERSE',
-                          style: Theme.of(context).textTheme.displayMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Welcome Back',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(color: AppColors.cyan),
+                  Container(
+                    width: 110,
+                    height: 110,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: AppColors.neonGradient,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.cyan.withOpacity(0.5),
+                          blurRadius: 20,
                         ),
                       ],
                     ),
+                    child: ClipOval(
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Image.asset(
+                          'assets/images/musiverse_logo.jpeg',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Text(
+                    'MUSIVERSE',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    'Welcome Back',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(color: AppColors.cyan),
                   ),
 
                   const SizedBox(height: 60),
@@ -191,17 +192,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             fillColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              if (states.contains(MaterialState.selected)) {
-                                return AppColors.cyan;
-                              }
-                              return AppColors.darkGrey;
+                                WidgetStateProperty.resolveWith((states) {
+                              return states.contains(WidgetState.selected)
+                                  ? AppColors.cyan
+                                  : AppColors.darkGrey;
                             }),
                           ),
-                          Text(
-                            'Remember me',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
+                          const Text('Remember me'),
                         ],
                       ),
                       TextButton(
@@ -247,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 32),
 
-                  /// REGISTER LINK
+                  /// REGISTER
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

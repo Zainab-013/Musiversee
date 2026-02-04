@@ -13,7 +13,6 @@ class AppTheme {
         primary: AppColors.primaryRed,
         secondary: AppColors.cyan,
         surface: AppColors.darkGrey,
-        background: AppColors.primaryBlack,
         error: AppColors.primaryRed,
       ),
       
@@ -154,7 +153,7 @@ class AppTheme {
         color: AppColors.navyBlue,
         elevation: 4,
         shape: RoundedRectangleBorder(
-borderRadius: const BorderRadius.all(Radius.circular(16)),
+borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
     );

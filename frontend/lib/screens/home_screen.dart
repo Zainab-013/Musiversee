@@ -125,8 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             onLike: () {
                               if (auth.user == null) return;
                               music.isSongLiked(song.id)
-                                  ? music.unlikeSong(auth.user!.id.toString(), song)
-                                  : music.likeSong(auth.user!.id.toString(), song);
+                                  ? music.unlikeSong(auth.user!.id!, song)
+                                  : music.likeSong(auth.user!.id!,song);
                             },
                           );
                         },

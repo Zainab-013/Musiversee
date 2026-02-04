@@ -1,8 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import '../config/app_colors.dart';
 import '../providers/auth_provider.dart';
 import '../providers/music_provider.dart';
@@ -19,13 +17,16 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.darkGradient),
+        decoration: const BoxDecoration(
+          gradient: AppColors.darkGradient,
+        ),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 const SizedBox(height: 40),
-                // Profile Picture
+
+                // ================= PROFILE AVATAR =================
                 Container(
                   width: 120,
                   height: 120,
@@ -40,40 +41,41 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: ClipOval(
-                    child: user?.profilePicture != null
-                        ? CachedNetworkImage(
-                            imageUrl: user!.profilePicture!,
-                            fit: BoxFit.cover,
-                          )
-                        : Container(
-                            color: AppColors.navyBlue,
-                            child: const Icon(
-                              Icons.person,
-                              size: 60,
-                              color: AppColors.cyan,
-                            ),
-                          ),
+                  child: const CircleAvatar(
+                    backgroundColor: AppColors.navyBlue,
+                    child: Icon(
+                      Icons.person,
+                      size: 60,
+                      color: AppColors.cyan,
+                    ),
                   ),
                 ),
+
                 const SizedBox(height: 24),
-                // Name
+
+                // ================= NAME =================
                 Text(
                   user?.name ?? 'Guest User',
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
+
                 const SizedBox(height: 8),
-                // Email
+
+                // ================= EMAIL =================
                 Text(
                   user?.email ?? 'guest@musiverse.com',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: AppColors.cyan),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: AppColors.cyan),
                 ),
+
                 const SizedBox(height: 40),
-                // Stats Cards
+
+                // ================= STATS =================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Row(
@@ -96,67 +98,59 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 32),
-                // Settings/Options
+
+                // ================= OPTIONS =================
                 _buildOption(
                   context,
                   icon: Icons.person_outline,
                   title: 'Edit Profile',
-                  onTap: () {
-                    // TODO: Navigate to edit profile
-                  },
+                  onTap: () {},
                 ),
                 _buildOption(
                   context,
                   icon: Icons.notifications_outlined,
                   title: 'Notifications',
-                  onTap: () {
-                    // TODO: Navigate to notifications settings
-                  },
+                  onTap: () {},
                 ),
                 _buildOption(
                   context,
                   icon: Icons.privacy_tip_outlined,
                   title: 'Privacy',
-                  onTap: () {
-                    // TODO: Navigate to privacy settings
-                  },
+                  onTap: () {},
                 ),
                 _buildOption(
                   context,
                   icon: Icons.help_outline,
                   title: 'Help & Support',
-                  onTap: () {
-                    // TODO: Navigate to help
-                  },
+                  onTap: () {},
                 ),
                 _buildOption(
                   context,
                   icon: Icons.info_outline,
                   title: 'About',
-                  onTap: () {
-                    // TODO: Show about dialog
-                  },
+                  onTap: () {},
                 ),
+
                 const SizedBox(height: 32),
-                // Logout Button
+
+                // ================= LOGOUT =================
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await authProvider.logout();
-                        if (context.mounted) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                            (route) => false,
-                          );
-                        }
+                      onPressed: () {
+                        authProvider.logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                          (_) => false,
+                        );
                       },
                       icon: const Icon(Icons.logout),
                       label: const Text('Logout'),
@@ -166,6 +160,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 100),
               ],
             ),
@@ -197,6 +192,7 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
+// ================= STAT CARD =================
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final int count;
@@ -231,16 +227,17 @@ class _StatCard extends StatelessWidget {
           Text(
             count.toString(),
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.white,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.lightGrey),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.lightGrey),
             textAlign: TextAlign.center,
           ),
         ],

@@ -1,6 +1,10 @@
 package com.musiverse.backend.entity;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "songs")
@@ -27,11 +31,19 @@ public class Song {
     @Column(name = "song_url", columnDefinition = "TEXT")
     private String songUrl;
 
-    // ✅ No-args constructor (REQUIRED by JPA)
+    // =========================
+    // LIKE / UNLIKE RELATION
+    // =========================
+    @ManyToMany(mappedBy = "likedSongs")
+    @JsonIgnore // ✅ prevents infinite JSON loop
+    private Set<User> likedByUsers = new HashSet<>();
+
+    // =========================
+    // CONSTRUCTORS
+    // =========================
     public Song() {
     }
 
-    // ✅ All-args constructor (optional but useful)
     public Song(String songName, String movie, String actor, String actress,
                 String artist, String composer, String lyricist,
                 String category, String imageUrl, String songUrl) {
@@ -47,8 +59,9 @@ public class Song {
         this.songUrl = songUrl;
     }
 
-    // ✅ Getters & Setters
-
+    // =========================
+    // GETTERS & SETTERS
+    // =========================
     public Long getId() {
         return id;
     }
@@ -131,5 +144,9 @@ public class Song {
 
     public void setSongUrl(String songUrl) {
         this.songUrl = songUrl;
+    }
+
+    public Set<User> getLikedByUsers() {
+        return likedByUsers;
     }
 }
