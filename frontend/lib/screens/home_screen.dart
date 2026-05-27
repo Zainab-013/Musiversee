@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter/foundation.dart';
 
 import '../config/app_colors.dart';
 import '../providers/auth_provider.dart';
@@ -17,11 +18,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Song> _randomSongs = [];
+  List<Song> _originalSongs = [];
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MusicProvider>().fetchAllSongs();
+      // Also fetch liked songs so heart icons show correct state
+      final auth = context.read<AuthProvider>();
+      if (auth.user != null) {
+        context.read<MusicProvider>().fetchLikedSongs(auth.user!.id);
+      }
     });
   }
 
@@ -36,6 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
     final music = context.watch<MusicProvider>();
+
+    if (music.allSongs.length != _originalSongs.length ||
+        !music.allSongs.every((s) => _originalSongs.contains(s))) {
+      _originalSongs = List.from(music.allSongs);
+      _randomSongs = List.from(music.allSongs)..shuffle();
+    }
 
     return Scaffold(
       body: Container(
@@ -95,18 +110,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     // Featured
-                    if (music.allSongs.isNotEmpty)
+                    if (_randomSongs.isNotEmpty)
                       SliverToBoxAdapter(
                         child: SizedBox(
                           height: 200,
                           child: PageView.builder(
                             controller: PageController(viewportFraction: 0.9),
-                            itemCount: music.allSongs.take(5).length,
+                            itemCount: _randomSongs.take(5).length,
                             itemBuilder: (context, index) {
-                              final song = music.allSongs[index];
+                              final song = _randomSongs[index];
                               return _FeaturedSongCard(
                                 song: song,
-                                onTap: () => music.playSong(song, playlist: music.allSongs),
+                                onTap: () => music.playSong(song, playlist: _randomSongs),
                               ).animate().fadeIn(duration: 300.ms);
                             },
                           ),
@@ -117,20 +132,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          final song = music.allSongs[index];
+                          final song = _randomSongs[index];
                           return _RecommendedSongTile(
                             song: song,
                             isLiked: music.isSongLiked(song.id),
-                            onTap: () => music.playSong(song, playlist: music.allSongs),
+                            onTap: () => music.playSong(song, playlist: _randomSongs),
                             onLike: () {
                               if (auth.user == null) return;
                               music.isSongLiked(song.id)
-                                  ? music.unlikeSong(auth.user!.id!, song)
-                                  : music.likeSong(auth.user!.id!,song);
+                              ? music.unlikeSong(auth.user!.id, song)
+                              : music.likeSong(auth.user!.id, song);
                             },
                           );
                         },
-                        childCount: music.allSongs.length,
+                        childCount: _randomSongs.length,
                       ),
                     ),
                   ],
@@ -177,9 +192,24 @@ class _RecommendedSongTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(imageUrl: song.imageUrl, width: 56, height: 56),
+      leading: SizedBox(
+        width: 56,
+        height: 56,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: CachedNetworkImage(
+            imageUrl: song.imageUrl,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(
+              color: AppColors.darkGrey,
+              child: const Icon(Icons.music_note, color: AppColors.cyan),
+            ),
+            errorWidget: (context, url, error) => Container(
+              color: AppColors.darkGrey,
+              child: const Icon(Icons.music_note, color: AppColors.cyan),
+            ),
+          ),
+        ),
       ),
       title: Text(song.name),
       subtitle: Text(song.singer),

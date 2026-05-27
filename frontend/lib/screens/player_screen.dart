@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:ui';
 
 import '../config/app_colors.dart';
+import '../providers/auth_provider.dart';
 import '../providers/music_provider.dart';
 
 class PlayerScreen extends StatelessWidget {
@@ -18,8 +19,8 @@ class PlayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MusicProvider>(
-      builder: (context, musicProvider, _) {
+    return Consumer2<MusicProvider, AuthProvider>(
+      builder: (context, musicProvider, authProvider, _) {
         final song = musicProvider.currentSong;
 
         if (song == null) {
@@ -100,10 +101,15 @@ class PlayerScreen extends StatelessWidget {
 
                         // Progress Slider
                         Slider(
-                          value: musicProvider.currentPosition.inSeconds.toDouble(),
+                          value: musicProvider.currentPosition.inSeconds.toDouble().clamp(
+                            0.0,
+                            musicProvider.totalDuration.inSeconds > 0
+                                ? musicProvider.totalDuration.inSeconds.toDouble()
+                                : 1.0,
+                          ),
                           max: musicProvider.totalDuration.inSeconds > 0
                               ? musicProvider.totalDuration.inSeconds.toDouble()
-                              : 1,
+                              : 1.0,
                           onChanged: (value) {
                             musicProvider.seekTo(
                               Duration(seconds: value.toInt()),
@@ -162,7 +168,14 @@ class PlayerScreen extends StatelessWidget {
                             color: AppColors.primaryRed,
                           ),
                           iconSize: 32,
-                          onPressed: () {},
+                          onPressed: () {
+                            if (authProvider.user == null) return;
+                            if (musicProvider.isSongLiked(song.id)) {
+                              musicProvider.unlikeSong(authProvider.user!.id, song);
+                            } else {
+                              musicProvider.likeSong(authProvider.user!.id, song);
+                            }
+                          },
                         ),
                       ],
                     ),

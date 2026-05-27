@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "users")
@@ -25,13 +26,17 @@ public class User {
     // LIKED SONGS (Many-to-Many)
     // =========================
     @ManyToMany
-    @JoinTable(
-        name = "user_liked_songs",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "song_id")
-    )
+    @JoinTable(name = "user_liked_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
     @JsonIgnore // ✅ prevents infinite recursion
     private Set<Song> likedSongs = new HashSet<>();
+
+    // =========================
+    // HIDDEN SONGS (Many-to-Many)
+    // =========================
+    @ManyToMany
+    @JoinTable(name = "user_hidden_songs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+    @JsonIgnore
+    private Set<Song> hiddenSongs = new HashSet<>();
 
     // =========================
     // CONSTRUCTORS
@@ -62,11 +67,12 @@ public class User {
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
-    // ❗ REQUIRED for register/login
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
@@ -77,6 +83,14 @@ public class User {
 
     public void setLikedSongs(Set<Song> likedSongs) {
         this.likedSongs = likedSongs;
+    }
+
+    public Set<Song> getHiddenSongs() {
+        return hiddenSongs;
+    }
+
+    public void setHiddenSongs(Set<Song> hiddenSongs) {
+        this.hiddenSongs = hiddenSongs;
     }
 
     // =========================

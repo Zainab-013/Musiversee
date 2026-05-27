@@ -11,6 +11,7 @@ class MusicProvider with ChangeNotifier {
   List<Song> _allSongs = [];
   List<Song> _likedSongs = [];
   List<Song> _recentlyPlayed = [];
+  List<Song> _hiddenSongs = [];
 
   Song? _currentSong;
 
@@ -24,6 +25,7 @@ class MusicProvider with ChangeNotifier {
   List<Song> get allSongs => _allSongs;
   List<Song> get likedSongs => _likedSongs;
   List<Song> get recentlyPlayed => _recentlyPlayed;
+  List<Song> get hiddenSongs => _hiddenSongs;
 
   Song? get currentSong => _currentSong;
   bool get isPlaying => _isPlaying;
@@ -79,8 +81,14 @@ class MusicProvider with ChangeNotifier {
   }
 
   Future<void> fetchLikedSongs(int userId) async {
-    _likedSongs = await ApiService.getLikedSongs(userId);
-    notifyListeners();
+    // Skip for guest user (id=0)
+    if (userId == 0) return;
+    try {
+      _likedSongs = await ApiService.getLikedSongs();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching liked songs: $e');
+    }
   }
 
   // ================= LIKE HELPERS =================
@@ -117,17 +125,29 @@ class MusicProvider with ChangeNotifier {
   Future<void> likeSong(int userId, Song song) async {
     if (isSongLiked(song.id)) return;
 
-    await ApiService.likeSong(userId, song.id);
-    song.isLiked = true;
-    _likedSongs.add(song);
-    notifyListeners();
+    try {
+      if (userId != 0) {
+        await ApiService.likeSong(song.id);
+      }
+      song.isLiked = true;
+      _likedSongs.add(song);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error liking song: $e');
+    }
   }
 
   Future<void> unlikeSong(int userId, Song song) async {
-    await ApiService.unlikeSong(userId, song.id);
-    song.isLiked = false;
-    _likedSongs.removeWhere((s) => s.id == song.id);
-    notifyListeners();
+    try {
+      if (userId != 0) {
+        await ApiService.unlikeSong(song.id);
+      }
+      song.isLiked = false;
+      _likedSongs.removeWhere((s) => s.id == song.id);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error unliking song: $e');
+    }
   }
 
   // ================= HELPERS =================
@@ -144,5 +164,38 @@ class MusicProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Future<void> deleteSong(int songId) async {
+    _allSongs.removeWhere((s) => s.id == songId);
+    _likedSongs.removeWhere((s) => s.id == songId);
+    _recentlyPlayed.removeWhere((s) => s.id == songId);
+    notifyListeners();
+
+    try {
+      await ApiService.deleteSong(songId);
+    } catch (e) {
+      debugPrint('Error deleting song on backend: $e');
+    }
+  }
+
+  Future<void> fetchHiddenSongs() async {
+    try {
+      _hiddenSongs = await ApiService.getHiddenSongs();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error fetching hidden songs: $e');
+    }
+  }
+
+  Future<void> unhideSong(Song song) async {
+    try {
+      await ApiService.unhideSong(song.id);
+      _hiddenSongs.removeWhere((s) => s.id == song.id);
+      notifyListeners();
+      await fetchAllSongs();
+    } catch (e) {
+      debugPrint('Error unhiding song: $e');
+    }
   }
 }

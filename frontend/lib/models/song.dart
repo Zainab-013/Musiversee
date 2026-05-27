@@ -31,11 +31,11 @@ class Song {
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song(
       id: json['id'] as int,
-      name: json['songName'] ?? json['song_name'], // safety
+      name: json['songName'] ?? json['song_name'] ?? '',
       movie: json['movie'] ?? '',
       actor: json['actor'],
       actress: json['actress'],
-      singer: json['singer'] ?? '',
+      singer: json['singer'] ?? json['artist'] ?? '',
       composer: json['composer'] ?? '',
       lyricist: json['lyricist'] ?? '',
       category: json['category'] ?? '',
@@ -61,3 +61,4 @@ class Song {
     };
   }
 }
+

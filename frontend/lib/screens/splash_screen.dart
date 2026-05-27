@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
 import '../config/app_colors.dart';
+import '../providers/auth_provider.dart';
 import 'auth/login_screen.dart';
+import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -41,11 +44,18 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () async {
       if (!mounted) return;
+      final authProvider = context.read<AuthProvider>();
+      
+      bool isLoggedIn = await authProvider.tryAutoLogin();
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(
+          builder: (_) => isLoggedIn ? const MainScreen() : const LoginScreen(),
+        ),
       );
     });
   }

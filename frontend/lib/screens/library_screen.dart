@@ -5,6 +5,7 @@ import '../config/app_colors.dart';
 import '../providers/music_provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/song_card.dart';
+import '../models/song.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -105,26 +106,80 @@ class _LibraryScreenState extends State<LibraryScreen>
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 100),
-      itemCount: musicProvider.likedSongs.length,
-      itemBuilder: (context, index) {
-        final song = musicProvider.likedSongs[index];
-        return SongCard(
-          song: song,
-          onTap: () {
-            musicProvider.playSong(song, playlist: musicProvider.likedSongs);
-          },
-          onLike: () {
-            final authProvider =
-                Provider.of<AuthProvider>(context, listen: false);
-            if (authProvider.user != null) {
-              musicProvider.unlikeSong(authProvider.user!.id, song);
-            }
-          },
-          isLiked: true,
-        );
-      },
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.play_arrow, color: AppColors.white),
+                  label: const Text('Play All'),
+                  onPressed: () {
+                    musicProvider.playSong(
+                      musicProvider.likedSongs.first,
+                      playlist: musicProvider.likedSongs,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryRed,
+                    foregroundColor: AppColors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.shuffle, color: AppColors.cyan),
+                  label: const Text('Shuffle', style: TextStyle(color: AppColors.cyan)),
+                  onPressed: () {
+                    final shuffled = List<Song>.from(musicProvider.likedSongs)..shuffle();
+                    musicProvider.playSong(
+                      shuffled.first,
+                      playlist: shuffled,
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.cyan),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: 100),
+            itemCount: musicProvider.likedSongs.length,
+            itemBuilder: (context, index) {
+              final song = musicProvider.likedSongs[index];
+              return SongCard(
+                song: song,
+                onTap: () {
+                  musicProvider.playSong(song, playlist: musicProvider.likedSongs);
+                },
+                onLike: () {
+                  final authProvider =
+                      Provider.of<AuthProvider>(context, listen: false);
+                  if (authProvider.user != null) {
+                    musicProvider.unlikeSong(authProvider.user!.id, song);
+                  }
+                },
+                isLiked: true,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

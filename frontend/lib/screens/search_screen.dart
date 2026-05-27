@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import '../config/app_colors.dart';
+import '../providers/auth_provider.dart';
 import '../providers/music_provider.dart';
 import '../models/song.dart';
 import '../widgets/song_card.dart';
@@ -17,6 +20,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Song> _searchResults = [];
   bool _isSearching = false;
+  Timer? _debounce;
+  String _selectedFilter = 'All';
 
   final List<Map<String, dynamic>> categories = [
     {'name': 'English', 'gradient': AppColors.categoryGradient1},
@@ -32,23 +37,51 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
-  Future<void> _performSearch(String query) async {
+  List<Song> get filteredResults {
+    final query = _searchController.text.toLowerCase();
+    if (query.isEmpty) return [];
+    if (_selectedFilter == 'All') return _searchResults;
+    return _searchResults.where((song) {
+      if (_selectedFilter == 'Songs') {
+        return song.name.toLowerCase().contains(query);
+      } else if (_selectedFilter == 'Artists') {
+        return song.singer.toLowerCase().contains(query);
+      } else if (_selectedFilter == 'Movies') {
+        return song.movie.toLowerCase().contains(query);
+      }
+      return true;
+    }).toList();
+  }
+
+  void _onSearchChanged(String query) {
+    _debounce?.cancel();
     if (query.isEmpty) {
       setState(() {
         _searchResults = [];
         _isSearching = false;
+        _selectedFilter = 'All';
       });
       return;
     }
+    setState(() {
+      _selectedFilter = 'All';
+    });
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      _performSearch(query);
+    });
+  }
 
+  Future<void> _performSearch(String query) async {
     setState(() => _isSearching = true);
 
     final musicProvider = Provider.of<MusicProvider>(context, listen: false);
     final results = await musicProvider.searchSongs(query);
 
+    if (!mounted) return;
     setState(() {
       _searchResults = results;
       _isSearching = false;
@@ -79,7 +112,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: _searchController,
-                  onChanged: _performSearch,
+                  onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: 'Search songs, artists, movies',
                     prefixIcon: const Icon(Icons.search, color: AppColors.cyan),
@@ -88,13 +121,16 @@ class _SearchScreenState extends State<SearchScreen> {
                             icon: const Icon(Icons.clear),
                             onPressed: () {
                               _searchController.clear();
-                              _performSearch('');
+                              _onSearchChanged('');
                             },
                           )
                         : null,
                   ),
                 ),
               ),
+
+              // Filter Chips
+              if (_searchController.text.isNotEmpty) _buildFilterChips(),
 
               // Content
               Expanded(
@@ -106,7 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               color: AppColors.cyan,
                             ),
                           )
-                        : _searchResults.isEmpty
+                        : filteredResults.isEmpty
                             ? const Center(
                                 child: Text('No results found'),
                               )
@@ -115,6 +151,68 @@ class _SearchScreenState extends State<SearchScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChips() {
+    final filters = ['All', 'Songs', 'Artists', 'Movies'];
+    return Container(
+      height: 40,
+      margin: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: filters.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final filter = filters[index];
+          final isSelected = _selectedFilter == filter;
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedFilter = filter;
+              });
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: isSelected
+                    ? const LinearGradient(
+                        colors: [AppColors.cyan, AppColors.purple],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
+                color: isSelected ? null : AppColors.darkGrey.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected ? AppColors.cyan : AppColors.lightGrey.withOpacity(0.3),
+                  width: 1,
+                ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppColors.cyan.withOpacity(0.3),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Center(
+                child: Text(
+                  filter,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : AppColors.lightGrey,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -176,18 +274,25 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchResults() {
     final musicProvider = Provider.of<MusicProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final results = filteredResults;
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 100),
-      itemCount: _searchResults.length,
+      itemCount: results.length,
       itemBuilder: (context, index) {
-        final song = _searchResults[index];
+        final song = results[index];
         return SongCard(
           song: song,
           onTap: () {
-            musicProvider.playSong(song, playlist: _searchResults);
+            musicProvider.playSong(song, playlist: results);
           },
           onLike: () {
-            // TODO: Implement like with userId
+            if (authProvider.user == null) return;
+            if (musicProvider.isSongLiked(song.id)) {
+              musicProvider.unlikeSong(authProvider.user!.id, song);
+            } else {
+              musicProvider.likeSong(authProvider.user!.id, song);
+            }
           },
           isLiked: musicProvider.isSongLiked(song.id),
         );
@@ -247,13 +352,19 @@ class _CategorySongsScreenState extends State<CategorySongsScreen> {
                     itemCount: _songs.length,
                     itemBuilder: (context, index) {
                       final song = _songs[index];
+                      final authProvider = Provider.of<AuthProvider>(context, listen: false);
                       return SongCard(
                         song: song,
                         onTap: () {
                           musicProvider.playSong(song, playlist: _songs);
                         },
                         onLike: () {
-                          // TODO: Implement like
+                          if (authProvider.user == null) return;
+                          if (musicProvider.isSongLiked(song.id)) {
+                            musicProvider.unlikeSong(authProvider.user!.id, song);
+                          } else {
+                            musicProvider.likeSong(authProvider.user!.id, song);
+                          }
                         },
                         isLiked: musicProvider.isSongLiked(song.id),
                       );

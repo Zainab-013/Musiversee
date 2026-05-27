@@ -33,24 +33,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final authProvider = context.read<AuthProvider>();
 
-    try {
-      await authProvider.login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+    final success = await authProvider.login(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
 
-      if (!mounted) return;
+    if (!mounted) return;
 
+    if (success) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const MainScreen()),
       );
-    } catch (e) {
-      if (!mounted) return;
-
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceAll('Exception:', '').trim()),
+        const SnackBar(
+          content: Text('Invalid email or password'),
           backgroundColor: AppColors.primaryRed,
         ),
       );

@@ -37,27 +37,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final authProvider = context.read<AuthProvider>();
 
-    try {
-      await authProvider.register(
-        _nameController.text.trim(),
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+    final success = await authProvider.register(
+      _nameController.text.trim(),
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
 
-      if (!mounted) return;
+    if (!mounted) return;
 
+    if (success) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const MainScreen()),
       );
-    } catch (e) {
-      if (!mounted) return;
-
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString().replaceAll('Exception:', '').trim(),
-          ),
+        const SnackBar(
+          content: Text('Registration failed. Email may already exist.'),
           backgroundColor: AppColors.primaryRed,
         ),
       );
@@ -69,9 +65,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final isLoading = context.watch<AuthProvider>().isLoading;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: AppColors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),

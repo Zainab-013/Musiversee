@@ -37,7 +37,29 @@ public class SongServiceImpl implements SongService {
     // =========================
     @Override
     public List<Song> getSongsByCategory(String category) {
-        return songRepository.findByCategoryIgnoreCase(category);
+        if (category == null) {
+            return new java.util.ArrayList<>();
+        }
+        String lowerCategory = category.trim().toLowerCase();
+        List<String> categories = new java.util.ArrayList<>();
+        switch (lowerCategory) {
+            case "pop":
+                categories.addAll(List.of("pop", "bollywood pop", "punjabi pop", "latin pop"));
+                break;
+            case "romantic":
+                categories.addAll(List.of("romantic", "bollywood romantic"));
+                break;
+            case "punjabi":
+                categories.addAll(List.of("punjabi", "punjabi pop"));
+                break;
+            case "hindi":
+                categories.addAll(List.of("hindi", "bollywood pop", "bollywood romantic"));
+                break;
+            default:
+                categories.add(lowerCategory);
+                break;
+        }
+        return songRepository.findByCategoryInIgnoreCase(categories);
     }
 
     // =========================
@@ -72,11 +94,12 @@ public class SongServiceImpl implements SongService {
 
         return songRepository.save(existingSong);
     }
+
     @Override
-public Song getSongById(Long id) {
-    return songRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Song not found"));
-}
+    public Song getSongById(Long id) {
+        return songRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Song not found"));
+    }
 
     // =========================
     // DELETE SONG

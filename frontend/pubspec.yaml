@@ -16,6 +16,7 @@ dependencies:
 
   # HTTP calls
   http: ^1.2.0
+  file_picker: ^8.0.0
 
   # Audio playback
   just_audio: ^0.9.36

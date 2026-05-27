@@ -26,6 +26,15 @@ class AudioPlayerService {
           ? _playlist[_currentIndex]
           : null;
 
+  // ================= SET AUDIO SOURCE =================
+  Future<void> _setAudioSource(String url) async {
+    if (kIsWeb) {
+      await _player.setUrl(url);
+    } else {
+      await _player.setAudioSource(LockCachingAudioSource(Uri.parse(url)));
+    }
+  }
+
   // ================= PLAY SONG =================
   Future<void> playSong(Song song, {List<Song>? playlist}) async {
     if (playlist != null && playlist.isNotEmpty) {
@@ -34,8 +43,12 @@ class AudioPlayerService {
       if (_currentIndex < 0) _currentIndex = 0;
     }
 
-    await _player.setUrl(song.songUrl);
-    await _player.play();
+    try {
+      await _setAudioSource(song.songUrl);
+      await _player.play();
+    } catch (e) {
+      debugPrint('Error playing song: $e');
+    }
   }
 
   // ================= AUTO PLAY NEXT =================
@@ -55,12 +68,15 @@ class AudioPlayerService {
     if (_currentIndex < _playlist.length - 1) {
       _currentIndex++;
     } else {
-      // 🔁 loop back to first song
       _currentIndex = 0;
     }
 
-    await _player.setUrl(_playlist[_currentIndex].songUrl);
-    await _player.play();
+    try {
+      await _setAudioSource(_playlist[_currentIndex].songUrl);
+      await _player.play();
+    } catch (e) {
+      debugPrint('Error playing next song: $e');
+    }
   }
 
   Future<void> playPrevious() async {
@@ -69,12 +85,15 @@ class AudioPlayerService {
     if (_currentIndex > 0) {
       _currentIndex--;
     } else {
-      // 🔁 go to last song
       _currentIndex = _playlist.length - 1;
     }
 
-    await _player.setUrl(_playlist[_currentIndex].songUrl);
-    await _player.play();
+    try {
+      await _setAudioSource(_playlist[_currentIndex].songUrl);
+      await _player.play();
+    } catch (e) {
+      debugPrint('Error playing previous song: $e');
+    }
   }
 
   Future<void> pause() => _player.pause();

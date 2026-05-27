@@ -2,9 +2,11 @@ package com.musiverse.backend.entity;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "songs")
@@ -45,8 +47,8 @@ public class Song {
     }
 
     public Song(String songName, String movie, String actor, String actress,
-                String artist, String composer, String lyricist,
-                String category, String imageUrl, String songUrl) {
+            String artist, String composer, String lyricist,
+            String category, String imageUrl, String songUrl) {
         this.songName = songName;
         this.movie = movie;
         this.actor = actor;
@@ -98,10 +100,12 @@ public class Song {
         this.actress = actress;
     }
 
+    @JsonProperty("singer")
     public String getArtist() {
         return artist;
     }
 
+    @JsonProperty("singer")
     public void setArtist(String artist) {
         this.artist = artist;
     }
@@ -148,5 +152,20 @@ public class Song {
 
     public Set<User> getLikedByUsers() {
         return likedByUsers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Song song = (Song) o;
+        return Objects.equals(id, song.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

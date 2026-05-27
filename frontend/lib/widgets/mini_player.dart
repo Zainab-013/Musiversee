@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../config/app_colors.dart';
+import '../providers/auth_provider.dart';
 import '../providers/music_provider.dart';
 import '../screens/player_screen.dart';
 
@@ -10,8 +11,8 @@ class MiniPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MusicProvider>(
-      builder: (context, musicProvider, child) {
+    return Consumer2<MusicProvider, AuthProvider>(
+      builder: (context, musicProvider, authProvider, child) {
         final currentSong = musicProvider.currentSong;
 
         if (currentSong == null) {
@@ -116,7 +117,12 @@ class MiniPlayer extends StatelessWidget {
                         : AppColors.white,
                   ),
                   onPressed: () {
-                    // TODO: Implement like/unlike with userId
+                    if (authProvider.user == null) return;
+                    if (musicProvider.isSongLiked(currentSong.id)) {
+                      musicProvider.unlikeSong(authProvider.user!.id, currentSong);
+                    } else {
+                      musicProvider.likeSong(authProvider.user!.id, currentSong);
+                    }
                   },
                 ),
                 // Play/Pause Button
