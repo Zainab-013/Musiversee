@@ -1,0 +1,108 @@
+# ##########################################
+# Musiverse Workspace Root GitIgnore
+# ##########################################
+
+# Generic OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and Editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------------------------
+# Backend: Spring Boot & Maven
+# ------------------------------------------
+backend/target/
+backend/*.log
+backend/.metadata/
+backend/bin/
+backend/dependency-reduced-pom.xml
+backend/.apt_generated/
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings/
+backend/.springBeans
+backend/.sts4-cache/
+
+# Help file
+backend/HELP.md
+
+# ------------------------------------------
+# Frontend: Flutter & Dart
+# ------------------------------------------
+# Flutter/Dart build and tool files
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/.pub-cache/
+frontend/.pub/
+frontend/build/
+
+# Web-specific files
+frontend/build_tracker.json
+
+# Android-specific files
+frontend/android/local.properties
+frontend/android/key.properties
+frontend/android/flutter_sdk/
+frontend/android/.gradle/
+frontend/android/app/local.properties
+
+# iOS-specific files
+frontend/ios/Flutter/Generated.xcconfig
+frontend/ios/Flutter/flutter_export_environment.sh
+frontend/ios/Flutter/App.framework
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/Flutter/Flutter.podspec
+frontend/ios/DerivedData/
+frontend/ios/.symlinks/
+frontend/ios/Pods/
+frontend/ios/.xcworkspace/
+
+# macOS-specific files
+frontend/macos/Flutter/ephemeral/
+
+# Linux-specific files
+frontend/linux/flutter/ephemeral/
+
+# Windows-specific files
+frontend/windows/flutter/ephemeral/
+
+# ------------------------------------------
+# Environment & Deployment Secrets
+# ------------------------------------------
+# Environment files (loaded locally)
+.env
+.env.local
+.env.properties
+.env.*
+*.env
+**/.env
+**/.env.properties
+**/.env.*
+
+# Signing keys, keystores, and certificates
+*.jks
+*.keystore
+*.p12
+*.pem
+*.der
+*.pfx
+frontend/android/app/*.jks
+frontend/android/app/*.keystore
