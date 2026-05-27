@@ -6,6 +6,7 @@ import '../providers/music_provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/song_card.dart';
 import '../models/song.dart';
+import 'player_screen.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -17,6 +18,8 @@ class LibraryScreen extends StatefulWidget {
 class _LibraryScreenState extends State<LibraryScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isPlayingAll = false;
+  bool _isShuffling = false;
 
   @override
   void initState() {
@@ -114,14 +117,44 @@ class _LibraryScreenState extends State<LibraryScreen>
             children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  icon: const Icon(Icons.play_arrow, color: AppColors.white),
-                  label: const Text('Play All'),
-                  onPressed: () {
-                    musicProvider.playSong(
-                      musicProvider.likedSongs.first,
-                      playlist: musicProvider.likedSongs,
-                    );
-                  },
+                  icon: _isPlayingAll
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(Icons.play_arrow, color: AppColors.white),
+                  label: Text(_isPlayingAll ? 'Loading...' : 'Play All'),
+                  onPressed: _isPlayingAll || _isShuffling
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isPlayingAll = true;
+                          });
+                          try {
+                            await musicProvider.playSong(
+                              musicProvider.likedSongs.first,
+                              playlist: musicProvider.likedSongs,
+                            );
+                            if (mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PlayerScreen(),
+                                ),
+                              );
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                _isPlayingAll = false;
+                              });
+                            }
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryRed,
                     foregroundColor: AppColors.white,
@@ -135,15 +168,48 @@ class _LibraryScreenState extends State<LibraryScreen>
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton.icon(
-                  icon: const Icon(Icons.shuffle, color: AppColors.cyan),
-                  label: const Text('Shuffle', style: TextStyle(color: AppColors.cyan)),
-                  onPressed: () {
-                    final shuffled = List<Song>.from(musicProvider.likedSongs)..shuffle();
-                    musicProvider.playSong(
-                      shuffled.first,
-                      playlist: shuffled,
-                    );
-                  },
+                  icon: _isShuffling
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            color: AppColors.cyan,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(Icons.shuffle, color: AppColors.cyan),
+                  label: Text(
+                    _isShuffling ? 'Shuffling...' : 'Shuffle',
+                    style: const TextStyle(color: AppColors.cyan),
+                  ),
+                  onPressed: _isPlayingAll || _isShuffling
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isShuffling = true;
+                          });
+                          try {
+                            final shuffled = List<Song>.from(musicProvider.likedSongs)..shuffle();
+                            await musicProvider.playSong(
+                              shuffled.first,
+                              playlist: shuffled,
+                            );
+                            if (mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PlayerScreen(),
+                                ),
+                              );
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                _isShuffling = false;
+                              });
+                            }
+                          }
+                        },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.cyan),
                     padding: const EdgeInsets.symmetric(vertical: 12),
