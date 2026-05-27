@@ -105,6 +105,29 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> resetPassword(
+      String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/auth/reset-password"),
+        headers: _headers,
+        body: jsonEncode({
+          "email": email,
+          "password": password,
+        }),
+      ).timeout(_timeout);
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        final errorBody = jsonDecode(response.body);
+        throw Exception(errorBody['error'] ?? 'Reset password failed');
+      }
+    } on SocketException {
+      throw Exception('Cannot connect to server. Please check your connection.');
+    }
+  }
+
   // =====================
   // SONGS
   // =====================

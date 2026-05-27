@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login", "/api/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/songs/liked", "/api/songs/hidden").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/songs/**").permitAll()
                         .anyRequest().authenticated()
