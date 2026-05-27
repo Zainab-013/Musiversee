@@ -9,6 +9,13 @@ import '../models/song.dart';
 class ApiService {
   // Automatically select host depending on platform (localhost for Web/Desktop, 10.0.2.2 for Android Emulator)
   static String get baseUrl {
+    // Set to true to use your production Render backend, or false for local development
+    const bool isProduction = true;
+
+    if (isProduction) {
+      return "https://musiverse-backend.onrender.com/api";
+    }
+
     if (kIsWeb) {
       return "http://localhost:8080/api";
     } else if (Platform.isAndroid) {
