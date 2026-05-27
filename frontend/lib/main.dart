@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 import 'config/app_theme.dart';
 import 'providers/auth_provider.dart';
@@ -8,6 +10,21 @@ import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize background playback for mobile platforms safely
+  try {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS)) {
+      await JustAudioBackground.init(
+        androidNotificationChannelId: 'com.ryanheise.audioservice.notification',
+        androidNotificationChannelName: 'Audio Playback',
+        androidNotificationOngoing: true,
+      );
+    }
+  } catch (e) {
+    debugPrint('Error initializing JustAudioBackground: $e');
+  }
   
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([

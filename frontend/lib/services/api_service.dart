@@ -25,7 +25,7 @@ class ApiService {
     }
   }
 
-  static const _timeout = Duration(seconds: 15);
+  static const _timeout = Duration(seconds: 60);
 
   // =====================
   // JWT TOKEN MANAGEMENT
