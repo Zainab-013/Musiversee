@@ -106,3 +106,14 @@ frontend/windows/flutter/ephemeral/
 *.pfx
 frontend/android/app/*.jks
 frontend/android/app/*.keystore
+
+# ------------------------------------------
+# Local Helper Scripts & Database Backups
+# ------------------------------------------
+musiverse_backup.sql
+updated_songs.json
+check_cloudinary.py
+backend/fix_images.py
+backend/insert_songs.sql
+*.pyc
+__pycache__/

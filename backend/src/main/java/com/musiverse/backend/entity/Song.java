@@ -22,6 +22,7 @@ public class Song {
     private String movie;
     private String actor;
     private String actress;
+    @Column(name = "singer")
     private String artist;
     private String composer;
     private String lyricist;
