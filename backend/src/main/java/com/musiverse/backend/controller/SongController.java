@@ -12,6 +12,7 @@ import com.musiverse.backend.service.CloudinaryService;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -704,6 +705,7 @@ public class SongController {
     // DELETE (HIDE) SONG FOR CURRENT USER
     // =========================
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<?> deleteSong(@PathVariable Long id) {
         try {
             User user = getAuthenticatedUser();
@@ -734,6 +736,7 @@ public class SongController {
     // UNHIDE SONG FOR CURRENT USER
     // =========================
     @PostMapping("/{id}/unhide")
+    @Transactional
     public ResponseEntity<?> unhideSong(@PathVariable Long id) {
         try {
             User user = getAuthenticatedUser();
@@ -761,6 +764,7 @@ public class SongController {
     // LIKE SONG
     // =========================
     @PostMapping("/{songId}/like")
+    @Transactional
     public ResponseEntity<?> likeSong(@PathVariable Long songId) {
         try {
             User user = getAuthenticatedUser();
@@ -779,6 +783,7 @@ public class SongController {
     // UNLIKE SONG
     // =========================
     @PostMapping("/{songId}/unlike")
+    @Transactional
     public ResponseEntity<?> unlikeSong(@PathVariable Long songId) {
         try {
             User user = getAuthenticatedUser();
