@@ -25,11 +25,29 @@ public class SongController {
     private final SongService songService;
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
+    private final jakarta.persistence.EntityManager entityManager;
 
-    public SongController(SongService songService, UserRepository userRepository, CloudinaryService cloudinaryService) {
+    public SongController(SongService songService, UserRepository userRepository, CloudinaryService cloudinaryService, jakarta.persistence.EntityManager entityManager) {
         this.songService = songService;
         this.userRepository = userRepository;
         this.cloudinaryService = cloudinaryService;
+        this.entityManager = entityManager;
+    }
+
+    // =========================
+    // DEBUG DATABASE TABLES
+    // =========================
+    @GetMapping("/debug-db")
+    public ResponseEntity<?> debugDb() {
+        try {
+            var query = entityManager.createNativeQuery(
+                "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+            );
+            List<?> tableNames = query.getResultList();
+            return ResponseEntity.ok(tableNames);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     // =========================
