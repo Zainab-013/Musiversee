@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login", "/api/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/songs/liked", "/api/songs/hidden").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/songs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/songs/**", "/api/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
