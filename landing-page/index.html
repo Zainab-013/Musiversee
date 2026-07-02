@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musiverse - Feel the Music</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background glow elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="music"></i>
+                </div>
+                <span>MUSIVERSE</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#hero">Overview</a>
+                <a href="#features">Features</a>
+                <a href="#showcase" class="active-link">App Showcase</a>
+                <a href="#tech-stack">Tech Stack</a>
+            </nav>
+            <a href="#showcase" class="btn btn-primary btn-nav">Explore App</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="tagline-badge">
+                    <span class="pulse-dot"></span> Discover the Sound of the Future
+                </div>
+                <h1>Feel The Music in <span>Musiverse</span></h1>
+                <p class="hero-desc">
+                    An immersive, premium music streaming and sharing platform. Built with cutting-edge technology to offer high-quality audio streaming, custom profiles, and seamless song uploads.
+                </p>
+                <div class="hero-actions">
+                    <a href="#showcase" class="btn btn-primary">
+                        <i data-lucide="smartphone"></i> Launch Showcase
+                    </a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-glow-card">
+                    <div class="music-bars">
+                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <i data-lucide="headphones" class="hero-headphones-icon"></i>
+                    <h3>Vibe to your local favorites</h3>
+                    <p>High-fidelity audio playback and dynamic playlists.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose <span>Musiverse</span>?</h2>
+                <p>Designed for music lovers and creators who demand high performance and premium styling.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="sparkles"></i></div>
+                    <h3>Premium Aesthetics</h3>
+                    <p>Indulge in a beautiful, glowing dark mode layout with custom gradient themes tailored to your mood.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="music-4"></i></div>
+                    <h3>Ad-Free Streaming</h3>
+                    <p>Listen to your favorite English, Hindi, Punjabi, and Korean hits seamlessly, without annoying interruptions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="upload-cloud"></i></div>
+                    <h3>Creator Portal</h3>
+                    <p>Easily upload your own tracks, manage your catalogue, and share your musical creations with others.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+                    <h3>Secure & Private</h3>
+                    <p>Manage your account, view your liked songs history, and hide/unhide songs to customize your personal feed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase Section (Interactive Device Mockup) -->
+    <section id="showcase" class="showcase-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Interactive <span>App Walkthrough</span></h2>
+                <p>Click on the tabs below to explore different views of the Musiverse Flutter application.</p>
+            </div>
+
+            <div class="showcase-grid">
+                <!-- Navigation Tabs (Left) -->
+                <div class="showcase-nav">
+                    <div class="showcase-tab active" data-screen="splash">
+                        <div class="tab-number">01</div>
+                        <div class="tab-info">
+                            <h4>Splash Screen</h4>
+                            <p>Beautiful launch screen with logo</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="login">
+                        <div class="tab-number">02</div>
+                        <div class="tab-info">
+                            <h4>Secure Login</h4>
+                            <p>Personalized user authentication</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="home">
+                        <div class="tab-number">03</div>
+                        <div class="tab-info">
+                            <h4>Home Dashboard</h4>
+                            <p>Daily recommendations & search</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="categories">
+                        <div class="tab-number">04</div>
+                        <div class="tab-info">
+                            <h4>Browse Categories</h4>
+                            <p>Interactive gradient mood grids</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="songlist">
+                        <div class="tab-number">05</div>
+                        <div class="tab-info">
+                            <h4>Category Playlist</h4>
+                            <p>Browse songs by specific genre</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="library">
+                        <div class="tab-number">06</div>
+                        <div class="tab-info">
+                            <h4>Your Library</h4>
+                            <p>Liked tracks & recent history</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="manage">
+                        <div class="tab-number">07</div>
+                        <div class="tab-info">
+                            <h4>Manage Songs</h4>
+                            <p>Upload & edit custom tracks</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                    <div class="showcase-tab" data-screen="profile">
+                        <div class="tab-number">08</div>
+                        <div class="tab-info">
+                            <h4>User Profile</h4>
+                            <p>Privacy settings & preferences</p>
+                        </div>
+                        <i data-lucide="chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- Smartphone Mockup & Image (Center) -->
+                <div class="device-column">
+                    <div class="smartphone-mockup">
+                        <div class="device-speaker"></div>
+                        <div class="device-screen-container">
+                            <img id="mockup-img" src="../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM.jpeg" alt="Musiverse App Screen">
+                        </div>
+                        <div class="device-home-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Explanation Panel (Right) -->
+                <div class="explanation-column">
+                    <div class="explanation-card">
+                        <div class="explanation-icon-wrapper">
+                            <i id="explanation-icon" data-lucide="music-2"></i>
+                        </div>
+                        <h3 id="explanation-title">Splash Screen</h3>
+                        <p id="explanation-text" class="explanation-body">
+                            The gateway to Musiverse. This view welcomes users with our custom glowing neon cyan and red logo set against an immersive violet and navy blue background gradient, establishing the app's dark-mode signature style.
+                        </p>
+                        <div class="screen-metadata">
+                            <span class="meta-tag">Flutter UI</span>
+                            <span class="meta-tag">Aesthetics</span>
+                        </div>
+                        <div class="showcase-autoplay-indicator">
+                            <div class="autoplay-progress"></div>
+                            <span>Autoplay active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Stack Section -->
+    <section id="tech-stack" class="tech-stack-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Built with <span>Modern Tech</span></h2>
+                <p>A full-stack, enterprise-grade architecture providing rapid music streaming and responsive client apps.</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" alt="Flutter" class="tech-icon-img">
+                    <h3>Flutter & Dart</h3>
+                    <p>Powers the multiplatform client application, using Provider for state management and high-performance audio players.</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot" class="tech-icon-img">
+                    <h3>Spring Boot</h3>
+                    <p>Robust Java backend handling REST APIs, JSON data serving, user profiles, and secure authorization filters.</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" class="tech-icon-img">
+                    <h3>PostgreSQL</h3>
+                    <p>Relational database holding users, song info, likes, and relational tables for per-user custom soft deletes.</p>
+                </div>
+                <div class="tech-card">
+                    <i class="tech-icon-icon" data-lucide="cloud"></i>
+                    <h3>Cloudinary</h3>
+                    <p>Globally distributed media CDN hosting the album artwork and actual high-quality MP3 audio files.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <p>&copy; 2026 Musiverse. Created with passion for music lovers.</p>
+            <div class="footer-links">
+                <a href="#hero">Overview</a>
+                <a href="#features">Features</a>
+                <a href="#showcase">Showcase</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
