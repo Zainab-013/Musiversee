@@ -21,13 +21,13 @@ Musiverse/
 
 ## 🛠️ Technology Stack
 
-| Component | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Backend API** | Spring Boot (Java), Spring Security | REST API serving, authorization, and core business logic |
-| **Database** | PostgreSQL | Relational database mapping users, songs, and preferences |
-| **Media Host** | Cloudinary | CDN storing album cover artwork and actual track MP3 files |
-| **Mobile App** | Flutter & Dart, Provider | Cross-platform UI, audio playback, and local state management |
-| **Landing Page**| HTML5, CSS3 (Vanilla), JavaScript | Premium marketing, onboarding overview, and interactive screenshots |
+| Component              | Technology                          | Purpose                                                             |
+| :--------------------- | :---------------------------------- | :------------------------------------------------------------------ |
+| **Backend API**  | Spring Boot (Java), Spring Security | REST API serving, authorization, and core business logic            |
+| **Database**     | PostgreSQL                          | Relational database mapping users, songs, and preferences           |
+| **Media Host**   | Cloudinary                          | CDN storing album cover artwork and actual track MP3 files          |
+| **Mobile App**   | Flutter & Dart, Provider            | Cross-platform UI, audio playback, and local state management       |
+| **Landing Page** | HTML5, CSS3 (Vanilla), JavaScript   | Premium marketing, onboarding overview, and interactive screenshots |
 
 ---
 
@@ -60,6 +60,7 @@ graph TD
 ```
 
 ### Architectural Components:
+
 1. **Client Tier**:
    - **Flutter Client**: Uses **Provider** for clean reactive state management. Handles local caching, playlists, user profile updates, and interfaces with the system audio controls for buffer-streaming.
    - **Landing Page**: A self-contained, light static webpage designed for promotional walkthroughs, featuring interactive screenshots and responsive layout support.
@@ -86,8 +87,10 @@ graph TD
 ## 🚀 Setup & Installation
 
 ### 1. Database Setup (PostgreSQL)
+
 A database backup file `musiverse_backup.sql` is provided in the root directory to help populate tables quickly.
 To import it into your local PostgreSQL instance:
+
 ```bash
 # Create the database in Postgres
 createdb musiverse
@@ -97,14 +100,16 @@ psql -U your_username -d musiverse -f musiverse_backup.sql
 ```
 
 ### 2. Spring Boot Backend Setup
+
 Make sure you have JDK 17+ installed.
+
 1. Open the `/backend` folder.
 2. Edit `src/main/resources/application.properties` to specify your PostgreSQL credentials and Cloudinary API configuration:
    ```properties
    spring.datasource.url=jdbc:postgresql://localhost:5402/musiverse
    spring.datasource.username=your_username
    spring.datasource.password=your_password
-   
+
    cloudinary.cloud_name=your_cloud_name
    cloudinary.api_key=your_api_key
    cloudinary.api_secret=your_api_secret
@@ -116,7 +121,9 @@ Make sure you have JDK 17+ installed.
 4. **Seed Database Helper**: After the backend is running, visit the helper endpoint `http://localhost:8080/api/songs/seed` in your browser to automatically clean duplicate rows and seed the database with defaults.
 
 ### 3. Flutter Frontend Setup
+
 Ensure you have Flutter SDK installed and a running simulator/emulator.
+
 1. Navigate to the `/frontend` directory.
 2. Fetch package dependencies:
    ```bash
@@ -126,14 +133,3 @@ Ensure you have Flutter SDK installed and a running simulator/emulator.
    ```bash
    flutter run
    ```
-
-### 4. Landing Page Setup
-To view the promotional static landing page:
-1. Make sure you copy the app screenshot assets first:
-   - **On PowerShell:** `Copy-Item -Path "frontend\assets\images" -Destination "landing-page\assets\images" -Recurse -Force`
-   - **On CMD:** `xcopy "frontend\assets\images" "landing-page\assets\images" /E /I /H /Y`
-2. Spin up a local server inside `/landing-page` or open `index.html` in your browser:
-   ```bash
-   python -m http.server 8080 --directory "landing-page"
-   ```
-3. Open `http://localhost:8080` in your web browser.
