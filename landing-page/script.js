@@ -6,56 +6,56 @@
 const screenData = {
     splash: {
         title: "Splash Screen",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM.jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM.jpeg",
         icon: "music-2",
         tags: ["Flutter UI", "Branding"],
         description: "The gateway to Musiverse. This view welcomes users with our custom glowing neon cyan and red logo set against an immersive violet and navy blue background gradient, establishing the app's dark-mode signature style."
     },
     login: {
         title: "Secure Login",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM (1).jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM (1).jpeg",
         icon: "lock",
         tags: ["Authentication", "Spring Security"],
         description: "A clean, modern credential login page. To guarantee a highly personalized experience with persistent stats and custom upload databases, we deprecated Guest Mode, ensuring every active user is securely authenticated."
     },
     home: {
         title: "Home Dashboard",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM (2).jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.29 PM (2).jpeg",
         icon: "home",
         tags: ["Feeds", "Discovery"],
         description: "The central music hub. Greets users with context-aware messages ('Good Evening') and provides a powerful search bar, a featured scrolling banner, and a quick list of top tracks, complete with instant 'like' toggles."
     },
     categories: {
         title: "Browse Categories",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.30 PM.jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.30 PM.jpeg",
         icon: "grid",
         tags: ["Search", "Genres"],
         description: "A visually striking category finder. Users can explore music tailored to their exact mood or language via grid cards styled in vibrant HSL gradients, covering English, Hindi, Punjabi, Korean, Pop, Romantic, and more."
     },
     songlist: {
         title: "Category Playlist",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.30 PM (1) copy.jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.30 PM (1) copy.jpeg",
         icon: "list-music",
         tags: ["Playlists", "Favorites"],
         description: "A dedicated song list for the selected category. Displays song details, artist names, albums, release years, and a list-wide favorite toggle, complete with clean album art containers and sleek neon borders."
     },
     library: {
         title: "Your Library",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.30 PM (2).jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.30 PM (2).jpeg",
         icon: "library",
         tags: ["User Data", "Playback"],
         description: "A unified view of user activity. Offers quick tabs for 'Liked Songs' and 'Recently Played' histories, paired with dual-button controls to immediately 'Play All' or 'Shuffle' the selected compilation."
     },
     manage: {
         title: "Manage Songs",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.31 PM.jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.31 PM.jpeg",
         icon: "upload-cloud",
         tags: ["Creator Tools", "CRUD"],
         description: "The music upload dashboard. Creators can hit the '+' action button to upload new tracks. The dashboard lists user-contributed songs, complete with inline edit (pencil) and hide (trash) buttons for simple track management."
     },
     profile: {
         title: "User Profile",
-        image: "../frontend/assets/images/WhatsApp Image 2026-07-02 at 11.05.31 PM (1).jpeg",
+        image: "assets/images/WhatsApp Image 2026-07-02 at 11.05.31 PM (1).jpeg",
         icon: "user",
         tags: ["Preferences", "Privacy"],
         description: "User dashboard displaying stats (counts of liked and played songs), quick profile detail edits, notification settings, and a dedicated Privacy page where users can manage their hidden tracks and instantly 'unhide' them."
